@@ -1,0 +1,6 @@
+# Ignore everything
+**
+
+# BUT lib + server.properties
+!/lib/**
+!/server.properties

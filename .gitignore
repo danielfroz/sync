@@ -1,0 +1,31 @@
+# Ignore everything...
+**
+
+# But the source code
+!/sync-api/
+!/sync-api/src/
+!/sync-api/src/**
+!/sync-api/pom.xml
+!/sync-core/
+!/sync-core/src/
+!/sync-core/src/**
+!/sync-core/pom.xml
+!/sync-distribution/
+!/sync-distribution/assembly.xml
+!/sync-distribution/pom.xml
+!/sync-netty/
+!/sync-netty/src/
+!/sync-netty/src/**
+!/sync-netty/pom.xml
+!/sync-startup/
+!/sync-startup/src/
+!/sync-startup/src/**
+!/sync-startup/pom.xml
+!/.dockerignore
+!/.gitignore
+!/build.sh
+!/Dockerfile
+!/pom.xml
+!/publish.sh
+!/README.md
+!/server.properties
