@@ -101,7 +101,7 @@ import io.syncframework.util.ExceptionUtils;
  *
  * @author dfroz
  */
-public class RequestHandler extends SimpleChannelInboundHandler<HttpObject> {
+public class RequestHandlerOld extends SimpleChannelInboundHandler<HttpObject> {
 
     private static final String SYNC_CLIENT_HEADER = "X-SYNC-Client";
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);

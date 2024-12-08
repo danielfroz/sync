@@ -7,7 +7,7 @@
     <parent>
         <artifactId>sync</artifactId>
         <groupId>io.actt</groupId>
-        <version>0.3.4</version>
+        <version>0.3.5</version>
     </parent>
 
     <artifactId>sync-netty</artifactId>
@@ -42,25 +42,4 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <source>${project.java.version}</source>
-                    <target>${project.java.version}</target>
-                    <compilerArguments>
-                        <!-- Do not warn about using sun.misc.Unsafe -->
-                        <XDignore.symbol.file />
-                    </compilerArguments>
-                    <optimize>true</optimize>
-                    <debug>${project.build.debug}</debug>
-                    <encoding>${project.build.encoding}</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

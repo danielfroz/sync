@@ -18,16 +18,18 @@ package io.syncframework.netty;
 import io.syncframework.core.Server;
 
 /**
- * 
+ *
  * @author dfroz
  *
  */
 public class ServerFactory {
-	private static Server server;
-	
-	public static Server getServer() {
-		if(server == null)
-			server = new ServerImpl();
-		return server;
-	}
+
+    private static Server server;
+
+    public static Server getServer() {
+        if (server == null) {
+            server = new ServerNetty();
+        }
+        return server;
+    }
 }
