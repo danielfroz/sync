@@ -37,12 +37,10 @@ import io.syncframework.core.Request;
 import io.syncframework.core.Session;
 
 /**
- * 
- * @author dfroz
- *
+ * Response to translate the HttpRequest to Sync.Request
  */
-public class RequestWrapper implements Request {
-	private static final Logger log = LoggerFactory.getLogger(RequestWrapper.class);
+public class RequestAdapter implements Request {
+	private static final Logger log = LoggerFactory.getLogger(RequestAdapter.class);
 	private final CookieContext cookieContext = new CookieContext();
 	private final Map<String, List<String>> headers = new HashMap<String, List<String>>();
 	private final Map<String, List<String>> parameters = new HashMap<String, List<String>>();
@@ -63,7 +61,7 @@ public class RequestWrapper implements Request {
 
 	@Override
 	public List<String> getHeader(String name) {
-		if(headers == null)
+		if (headers == null)
 			return null;
 		return headers.get(name);
 	}
@@ -82,7 +80,7 @@ public class RequestWrapper implements Request {
 	public RequestContext getRequestContext() {
 		return requestContext;
 	}
-	
+
 	public void setRequest(HttpRequest request) {
 		this.request = request;
 		this.session = null;
@@ -93,42 +91,42 @@ public class RequestWrapper implements Request {
 		for (Entry<String, String> entry : request.headers()) {
 			String name = entry.getKey();
 			String value = entry.getValue();
-			
-			if(log.isTraceEnabled())
+
+			if (log.isTraceEnabled())
 				log.trace("header: {} -> {}", name, value);
-			
-			if(name.toLowerCase().equals(HttpHeaderNames.COOKIE.toString())) {
+
+			if (name.toLowerCase().equals(HttpHeaderNames.COOKIE.toString())) {
 				ServerCookieDecoder decoder = ServerCookieDecoder.STRICT;
-	            Set<Cookie> cookies = decoder.decode(value);
-	            for(Cookie cookie: cookies) {
-	            	cookieContext.put(cookie.name(), cookie.value());
-	            }
+				Set<Cookie> cookies = decoder.decode(value);
+				for (Cookie cookie : cookies) {
+					cookieContext.put(cookie.name(), cookie.value());
+				}
 				continue;
 			}
-			
+
 			List<String> values = headers.get(name);
-			if(values == null) {
+			if (values == null) {
 				values = new LinkedList<String>();
 			}
 			values.add(entry.getValue());
 			headers.put(name, values);
-        }
-        
+		}
+
 		//
-        // parameters from the URL
-        //
-        QueryStringDecoder decoderQuery = new QueryStringDecoder(request.uri());
-        Map<String, List<String>> uriAttributes = decoderQuery.parameters();
-        for (Entry<String, List<String>> attr: uriAttributes.entrySet()) {
-        	parameters.put(attr.getKey(), attr.getValue());
-        }
+		// parameters from the URL
+		//
+		QueryStringDecoder decoderQuery = new QueryStringDecoder(request.uri());
+		Map<String, List<String>> uriAttributes = decoderQuery.parameters();
+		for (Entry<String, List<String>> attr : uriAttributes.entrySet()) {
+			parameters.put(attr.getKey(), attr.getValue());
+		}
 	}
 
 	@Override
 	public Session getSession() {
 		return session;
 	}
-	
+
 	public void setSession(Session session) {
 		this.session = session;
 	}
@@ -137,7 +135,7 @@ public class RequestWrapper implements Request {
 	public String getUri() {
 		return request.uri();
 	}
-	
+
 	@Override
 	public void recycle() {
 		cookieContext.clear();

@@ -32,9 +32,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -43,11 +41,7 @@ import io.netty.channel.kqueue.KQueue;
 import io.netty.channel.kqueue.KQueueEventLoopGroup;
 import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpRequestDecoder;
-import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
@@ -238,11 +232,11 @@ public class ServerNetty implements Server {
             }
         });
 
+        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
         EventLoopGroup bossGroup = null;
         EventLoopGroup workerGroup = null;
         EventExecutorGroup executorGroup = new DefaultEventExecutorGroup(50);
         try {
-            ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED);
             ServerBootstrap b = new ServerBootstrap();
             b.option(ChannelOption.SO_BACKLOG, 1024);
             b.option(ChannelOption.SO_REUSEADDR, true);
@@ -260,18 +254,7 @@ public class ServerNetty implements Server {
                 b.channel(NioServerSocketChannel.class);
             }
             b.group(bossGroup, workerGroup);
-
-            // b.childHandler(new ServerInitializer(this, executorsGroup));
-            b.childHandler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-                    ChannelPipeline p = ch.pipeline();
-                    p.addLast("decoder", new HttpRequestDecoder());
-                    p.addLast("encoder", new HttpResponseEncoder());
-                    p.addLast("aggregator", new HttpObjectAggregator(1048576));
-                    p.addLast(executorGroup, "handler", new RequestHandler(ServerNetty.this));
-                }
-            });
+            b.childHandler(new HttpServerInitializer(ServerNetty.this));
             try {
                 ChannelFuture chf = null;
                 if (config.getListenAddress() != null) {
@@ -293,6 +276,7 @@ public class ServerNetty implements Server {
         } finally {
             if (executorGroup != null) {
                 executorGroup.shutdownGracefully();
+                executorGroup.close();
             }
             if (bossGroup != null) {
                 bossGroup.shutdownGracefully();
