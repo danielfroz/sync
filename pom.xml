@@ -28,7 +28,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
   <properties>
     <project.build.debug>true</project.build.debug>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.java.version>22</project.java.version>
+    <project.java.version>21</project.java.version>
 
     <freemarker.version>2.3.33</freemarker.version>
     <javassist.version>3.22.0-CR2</javassist.version>
